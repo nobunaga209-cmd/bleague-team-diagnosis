@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="B.PREMIER全26クラブの中から、あなたにぴったりのBリーグチームを診断！12の質問に答えるだけで、相性のいいクラブが分かります。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="あなたの適正Bリーグチーム診断｜全26クラブ">
+<meta property="og:description" content="12の質問に答えて、あなたにぴったりのBリーグチームを診断！">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="あなたの適正Bリーグチーム診断｜全26クラブ">
+<meta name="twitter:description" content="12の質問に答えて、あなたにぴったりのBリーグチームを診断！">
+
+<title>あなたの適正Bリーグチーム診断</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef1f6; --bg-2: #ffffff; --ink: #161a22; --ink-soft: #55606f;
+    --line: #d7dde6; --accent: #ff6a2b; --accent-ink: #ffffff; --accent2: #1f8f6e;
+    --court: #16304f; --shadow: rgba(22, 26, 34, 0.1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #11141b; --bg-2: #1a1f29; --ink: #f1f3f7; --ink-soft: #a8b2c1;
+      --line: #2b3340; --accent: #ff7a3d; --accent-ink: #171308; --accent2: #34b98c;
+      --court: #cfe0f5; --shadow: rgba(0, 0, 0, 0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #11141b; --bg-2: #1a1f29; --ink: #f1f3f7; --ink-soft: #a8b2c1;
+    --line: #2b3340; --accent: #ff7a3d; --accent-ink: #171308; --accent2: #34b98c;
+    --court: #cfe0f5; --shadow: rgba(0, 0, 0, 0.4);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink); font-family: "Noto Sans JP", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; min-height: 100%; padding: 28px 20px 48px; display: flex; flex-direction: column; }
+  .brand { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: 13px; letter-spacing: .08em; color: var(--accent); margin-bottom: 6px; }
+  h1 { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 900; font-size: 28px; line-height: 1.35; margin: 0 0 10px; }
+  .lead { color: var(--ink-soft); font-size: 15px; line-height: 1.8; margin: 0 0 28px; max-width: 42ch; }
+  .court { position: relative; width: 100%; height: 140px; border-radius: 18px; background: var(--court); overflow: hidden; margin-bottom: 26px; }
+  .court svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .btn {
+    font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: 16px; border: none;
+    border-radius: 999px; padding: 16px 28px; cursor: pointer; background: var(--accent); color: var(--accent-ink);
+    box-shadow: 0 10px 24px -10px var(--shadow); transition: transform .15s ease;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); box-shadow: none; }
+  .progress-row { display: flex; gap: 5px; margin-bottom: 22px; }
+  .progress-row span { flex: 1; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .progress-row span i { display: block; height: 100%; width: 0%; background: var(--accent); transition: width .3s ease; }
+  .progress-row span.done i, .progress-row span.active i { width: 100%; }
+  .q-count { font-size: 13px; color: var(--ink-soft); margin-bottom: 8px; font-weight: 500; }
+  .q-text { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: 21px; line-height: 1.6; margin: 0 0 22px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    text-align: left; background: var(--bg-2); border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 16px 18px; font-size: 15px; color: var(--ink); cursor: pointer; font-family: "Noto Sans JP", sans-serif;
+    transition: border-color .15s ease, transform .1s ease;
+  }
+  .opt:active { transform: scale(0.98); }
+  .opt:hover { border-color: var(--accent); }
+  .screen { display: none; flex: 1; flex-direction: column; }
+  .screen.show { display: flex; }
+  .result-badge { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 500; font-size: 13px; letter-spacing: .08em; color: var(--ink-soft); margin-bottom: 8px; }
+  .result-title { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 900; font-size: 32px; line-height: 1.3; margin: 0 0 4px; color: var(--accent); }
+  .result-sub { font-size: 14.5px; color: var(--ink-soft); margin: 0 0 22px; }
+  .result-desc { font-size: 15.5px; line-height: 1.9; margin: 0 0 22px; }
+  .trait-list { list-style: none; padding: 0; margin: 0 0 28px; display: flex; flex-direction: column; gap: 10px; }
+  .trait-list li { display: flex; align-items: center; gap: 12px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: 13px 16px; font-size: 14.5px; }
+  .trait-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); flex-shrink: 0; }
+  .compat-box {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--bg-2)), var(--bg-2));
+    border: 1.5px solid var(--accent);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .compat-label {
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: .06em;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .compat-name {
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-size: 19px; font-weight: 900; margin-bottom: 6px;
+  }
+  .compat-reason { font-size: 14px; line-height: 1.75; color: var(--ink-soft); margin: 0; }
+  .nba-box {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent2) 14%, var(--bg-2)), var(--bg-2));
+    border-color: var(--accent2);
+  }
+  .nba-box .compat-label, .nba-box .compat-name { color: var(--accent2); }
+  .nba-box .compat-name { color: var(--ink); }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 10px; }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--bg); padding: 12px 20px; border-radius: 999px; font-size: 14px; font-weight: 500;
+    opacity: 0; pointer-events: none; transition: all .25s ease; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="screen show" id="screen-start">
+    <div class="brand">TEAM CHECK — ALL 26 CLUBS</div>
+    <h1>あなたの適正<br>Bリーグチーム診断</h1>
+    <p class="lead">B.PREMIER全26クラブの中から、あなたの性格に一番近いクラブをマッチング。12の質問に答えるだけで分かります。</p>
+    <div class="court">
+      <svg viewBox="0 0 400 140" preserveAspectRatio="none">
+        <circle cx="200" cy="70" r="34" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+        <line x1="200" y1="0" x2="200" y2="140" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+        <path d="M0,10 L55,10 A65,65 0 0 1 55,130 L0,130" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+        <path d="M400,10 L345,10 A65,65 0 0 0 345,130 L400,130" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+        <circle cx="200" cy="70" r="4" fill="#ff6a2b"/>
+      </svg>
+    </div>
+    <button class="btn" onclick="startQuiz()">診断をはじめる</button>
+  </div>
+
+  <div class="screen" id="screen-quiz">
+    <div class="progress-row" id="progress-row"></div>
+    <div class="q-count" id="q-count">QUESTION 1 / 12</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <div class="screen" id="screen-result">
+    <div class="result-badge">YOUR TEAM IS</div>
+    <h2 class="result-title" id="r-title"></h2>
+    <p class="result-sub" id="r-sub"></p>
+    <p class="result-desc" id="r-desc"></p>
+    <ul class="trait-list" id="r-traits"></ul>
+    <div class="compat-box" id="compat-box">
+      <div class="compat-label">相性のいいタイプ</div>
+      <div class="compat-name" id="compat-name"></div>
+      <p class="compat-reason" id="compat-reason"></p>
+    </div>
+    <div class="compat-box nba-box" id="nba-box">
+      <div class="compat-label">おすすめのNBAチーム</div>
+      <div class="compat-name" id="nba-name"></div>
+      <p class="compat-reason" id="nba-reason"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="saveImage()">画像で保存・シェア</button>
+      <button class="btn btn-ghost" onclick="shareResult()">テキストをコピー</button>
+      <button class="btn btn-ghost" onclick="restart()">もう一度診断する</button>
+    </div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* 各選択肢は (e:熱量, s:華やかさ, t:チームワーク重視度) を1〜5で持つ */
+const QUESTIONS = [
+  { text: "旅行のスタイルとして、一番しっくりくるのは?", opts: [
+    {label:"大自然の中でのんびり過ごす", e:2,s:1,t:4},
+    {label:"事前に計画を立てて効率よく回る", e:2,s:2,t:3},
+    {label:"話題のおしゃれなスポットを巡る", e:3,s:5,t:2},
+    {label:"現地の人とワイワイ交流を楽しむ", e:4,s:4,t:3}
+  ]},
+  { text: "言われて一番嬉しい褒め言葉は?", opts: [
+    {label:"「落ち着いてるね」", e:1,s:1,t:3},
+    {label:"「安定してるね、信頼できる」", e:2,s:1,t:4},
+    {label:"「華があるね」", e:3,s:5,t:2},
+    {label:"「情熱的だね」", e:5,s:3,t:3}
+  ]},
+  { text: "ストレスを感じたときの発散方法は?", opts: [
+    {label:"自然の中で深呼吸する", e:1,s:1,t:3},
+    {label:"いつも通りのルーティンで落ち着く", e:2,s:1,t:4},
+    {label:"おしゃれな場所で気分転換する", e:3,s:5,t:2},
+    {label:"大声で歌って騒いで発散する", e:5,s:4,t:2}
+  ]},
+  { text: "チームで役割を任されるなら、どれが嬉しい?", opts: [
+    {label:"縁の下の力持ち役", e:2,s:1,t:5},
+    {label:"計画を進める管理役", e:2,s:2,t:4},
+    {label:"見た目を整えるプロデュース役", e:3,s:5,t:2},
+    {label:"みんなを鼓舞する熱いリーダー役", e:5,s:3,t:3}
+  ]},
+  { text: "好きな食べ物の傾向は?", opts: [
+    {label:"何度食べても飽きない家庭的な味", e:2,s:1,t:4},
+    {label:"昔ながらの安定した定食", e:2,s:1,t:3},
+    {label:"SNS映えするおしゃれな一皿", e:3,s:5,t:2},
+    {label:"スパイシーで刺激的な一品", e:5,s:4,t:2}
+  ]},
+  { text: "休日の過ごし方として理想なのは?", opts: [
+    {label:"のんびり自然の中で過ごす", e:1,s:1,t:4},
+    {label:"規則正しく予定をこなす", e:2,s:2,t:4},
+    {label:"友人とおしゃれな時間を過ごす", e:3,s:5,t:3},
+    {label:"体を動かして汗を流す", e:4,s:3,t:2}
+  ]},
+  { text: "グループの中での立ち位置は?", opts: [
+    {label:"周りを和ませるムードメーカー", e:3,s:4,t:4},
+    {label:"冷静に状況を見極める参謀役", e:1,s:2,t:3},
+    {label:"自然と注目を集める存在", e:4,s:5,t:2},
+    {label:"仲間と支え合う縁の下の力持ち", e:2,s:1,t:5}
+  ]},
+  { text: "一言で言うと、自分は?", opts: [
+    {label:"「堅実」", e:2,s:1,t:4},
+    {label:"「華やか」", e:3,s:5,t:2},
+    {label:"「情熱的」", e:5,s:3,t:3},
+    {label:"「クール」", e:1,s:2,t:3}
+  ]},
+  { text: "仕事や作業で得意なことは?", opts: [
+    {label:"コツコツ続ける地道な作業", e:2,s:1,t:4},
+    {label:"アイデアを形にすること", e:3,s:4,t:2},
+    {label:"人前でのプレゼンや発表", e:4,s:5,t:2},
+    {label:"冷静に問題を解決すること", e:1,s:2,t:3}
+  ]},
+  { text: "友人からよく相談されることは?", opts: [
+    {label:"人間関係の悩み(聞き役になる)", e:2,s:1,t:5},
+    {label:"おしゃれや見た目のこと", e:3,s:5,t:2},
+    {label:"将来のプランニング", e:2,s:2,t:3},
+    {label:"元気になりたいときの相談相手", e:5,s:4,t:3}
+  ]},
+  { text: "好きな音楽・エンタメのジャンルに近いのは?", opts: [
+    {label:"穏やかなバラード", e:1,s:1,t:3},
+    {label:"ノリの良いポップス", e:4,s:5,t:2},
+    {label:"受け継がれてきた伝統的な名曲", e:2,s:1,t:4},
+    {label:"熱量あふれるロック・ライブ系", e:5,s:4,t:3}
+  ]},
+  { text: "大事にしている信条に近いのは?", opts: [
+    {label:"「継続は力なり」", e:2,s:1,t:4},
+    {label:"「楽しんだもの勝ち」", e:4,s:5,t:2},
+    {label:"「仲間がいてこそ」", e:3,s:2,t:5},
+    {label:"「自分の信じた道を進む」", e:2,s:2,t:2}
+  ]}
+];
+
+const TEAMS = [
+  {title:"レバンガ北海道", sub:"北海道 / おおらかタイプ", e:2,s:2,t:4,
+    desc:"大らかで、仲間と支え合いながら着実に歩みを進めるタイプです。細かいことを気にせず、広い心で周りを受け止める包容力があります。グループの中では、ピリついた空気を和ませる存在になりやすく、一緒にいるだけで安心感を与えられる人です。焦らずマイペースに物事を進めるスタイルが、長い目で見て大きな信頼につながっていきます。",
+    traits:["おおらかで包容力がある","チームプレーを大切にする","焦らず着実に進む"],
+    compat:"千葉ジェッツ", compatReason:"あなたのおおらかさが、華やかなタイプの勢いを穏やかに受け止めてくれる好相性。",
+    nba:"ミネソタ・ティンバーウルブズ", nbaReason:"雪深い北国を本拠地に、じっくりとチームを育ててきた我慢強さが重なります。"},
+  {title:"仙台89ERS", sub:"宮城 / バランスタイプ", e:3,s:3,t:4,
+    desc:"バランス感覚に優れ、周囲と協調しながら安定した力を発揮するタイプです。特定の役割に偏らず、その場で求められることを柔軟にこなせる器用さがあります。チームの中では潤滑油のような存在で、誰とでも自然体で付き合える関係づくりが得意です。目立つタイプではないものの、気づけば欠かせない存在になっていることが多いでしょう。",
+    traits:["バランス感覚に優れる","協調性が高い","安定した力を発揮する"],
+    compat:"島根スサノオマジック", compatReason:"バランス型のあなたが、情熱的なタイプの熱量をうまく受け止められる組み合わせ。",
+    nba:"インディアナ・ペイサーズ", nbaReason:"派手さよりもチームプレーと堅実さを重視するスタイルが共通しています。"},
+  {title:"秋田ノーザンハピネッツ", sub:"秋田 / 地域愛タイプ", e:4,s:2,t:4,
+    desc:"地域への愛着が強く、熱い想いで周りを巻き込みながら前進するタイプです。身近な人や慣れ親しんだ環境を大切にし、そこで積み重ねてきた関係性に誇りを持っています。一度仲間だと認めた相手には、とことん熱量高く向き合う義理堅さも魅力。地に足のついた情熱で、周囲を自然と惹きつけていきます。",
+    traits:["地元愛・仲間愛が強い","熱意を持って取り組む","周囲を巻き込む力がある"],
+    compat:"サンロッカーズ渋谷", compatReason:"地に足のついたあなたと、都会的なセンスを持つタイプは、互いにないものを補い合える関係。",
+    nba:"メンフィス・グリズリーズ", nbaReason:"地域に根ざした泥臭いプレースタイルと、熱いファンとの一体感が似ています。"},
+  {title:"茨城ロボッツ", sub:"茨城 / 挑戦者タイプ", e:3,s:4,t:3,
+    desc:"新しいことに前向きに挑戦する、勢いとフットワークの軽さが魅力のタイプです。変化を恐れず、まだ誰もやっていないことに興味を惹かれる好奇心旺盛な一面があります。周囲からは「行動が早いね」と言われることも多いはず。失敗を恐れずに踏み出す姿勢が、新しいチャンスを引き寄せていきます。",
+    traits:["新しい挑戦に前向き","フットワークが軽い","勢いを大事にする"],
+    compat:"シーホース三河", compatReason:"新しい挑戦を楽しむあなたと、伝統を守るタイプは、バランスの取れた好コンビ。",
+    nba:"オクラホマシティ・サンダー", nbaReason:"若さとエネルギーを武器に、着実に力をつけてきた成長過程が重なります。"},
+  {title:"宇都宮ブレックス", sub:"栃木 / 堅実タイプ", e:2,s:1,t:4,
+    desc:"伝統と実績を大切にし、着実な積み重ねで信頼を得るタイプです。派手な自己アピールよりも、日々の行動の積み重ねで評価されることを好みます。約束や期限をきちんと守る誠実さがあり、周囲から「あの人なら安心」と頼りにされる存在。地道な努力が、やがて揺るぎない信頼へと変わっていきます。",
+    traits:["着実に物事を進める","周囲からの信頼が厚い","派手さより実質重視"],
+    compat:"大阪エヴェッサ", compatReason:"堅実なあなたに、明るいムードメーカータイプが加わることで、安定感と賑やかさが両立します。",
+    nba:"サンアントニオ・スパーズ", nbaReason:"長年培ってきた堅実な組織文化と、ブレない強さが共通しています。"},
+  {title:"群馬クレインサンダーズ", sub:"群馬 / バランスタイプ", e:3,s:3,t:3,
+    desc:"特定の色に偏らず、状況に応じてバランス良く立ち回れるタイプです。場の空気を読む力があり、必要であれば前に出て、必要でなければ一歩引くという判断が自然にできます。癖が少ない分、誰とでも付き合いやすく、幅広い人間関係を築きやすいのが強み。柔軟さこそが、あなたの一番の武器です。",
+    traits:["柔軟でバランスが良い","状況判断に優れる","癖がなく付き合いやすい"],
+    compat:"琉球ゴールデンキングス", compatReason:"柔軟なあなたは、情熱的なタイプのエネルギーをうまく活かせる存在。",
+    nba:"ユタ・ジャズ", nbaReason:"派手さはなくても、システムとチームワークで結果を出すスタイルが似ています。"},
+  {title:"アルティーリ千葉", sub:"千葉 / 勢いタイプ", e:4,s:3,t:3,
+    desc:"勢いと情熱を武器に、新しいステージへ駆け上がろうとするタイプです。現状に満足せず、常に「もっと上を」という向上心を持っています。周囲を巻き込むエネルギーがあり、一緒にいると自然と前向きな気持ちにさせてくれる存在。上昇志向の強さが、まわりのモチベーションにも良い影響を与えています。",
+    traits:["勢いと情熱がある","上昇志向が強い","臆せず挑戦できる"],
+    compat:"滋賀レイクス", compatReason:"勢いのあるあなたを、協調性の高いタイプが穏やかに支えてくれる好相性。",
+    nba:"クリーブランド・キャバリアーズ", nbaReason:"勢いのある若手を中心に、上昇気流に乗っていく雰囲気が重なります。"},
+  {title:"千葉ジェッツ", sub:"千葉 / 華やかタイプ", e:3,s:5,t:2,
+    desc:"華やかさとエンタメ性を兼ね備え、人前で輝くことを恐れないタイプです。注目を浴びる場面でこそ本領を発揮し、堂々とした振る舞いで周りを惹きつけます。見た目や雰囲気づくりへのこだわりも強く、センスの良さを周囲から褒められることも多いはず。華のある存在感が、あなたの最大の魅力です。",
+    traits:["華やかで人目を引く","人前に立つのが得意","場を盛り上げるセンスがある"],
+    compat:"レバンガ北海道", compatReason:"華やかなあなたを、おおらかに受け止めてくれるタイプとの相性が抜群です。",
+    nba:"ロサンゼルス・レイカーズ", nbaReason:"華やかさとスター性、エンターテインメント性を大事にする文化が共通しています。"},
+  {title:"アルバルク東京", sub:"東京 / クールタイプ", e:1,s:2,t:3,
+    desc:"クールに物事を分析し、感情に流されない冷静な判断ができるタイプです。感情的になりがちな場面でも、一歩引いて状況を俯瞰する視点を持っています。派手なパフォーマンスよりも、堅実な積み上げと論理的な説明を重視するスタイル。その落ち着きが、周囲に安心感と信頼をもたらします。",
+    traits:["冷静で論理的","ストイックに取り組む","堅実さで信頼を得る"],
+    compat:"大阪エヴェッサ", compatReason:"クールなあなたに、明るいムードメーカータイプが加わることで、絶妙なバランスが生まれます。",
+    nba:"ボストン・セルティックス", nbaReason:"伝統と知性を重んじる、クールで規律あるチームカラーが似ています。"},
+  {title:"サンロッカーズ渋谷", sub:"東京 / スマートタイプ", e:2,s:4,t:3,
+    desc:"都会的なセンスを持ち、スマートに物事をこなすことを好むタイプです。無駄を嫌い、効率よく洗練されたやり方を追求する傾向があります。見た目や立ち振る舞いにも自然と気を配り、周囲から「センスがいいね」と言われることも多いはず。スマートさの中にある芯の強さが魅力です。",
+    traits:["都会的でスマート","センスの良さがある","物事をスマートに処理する"],
+    compat:"秋田ノーザンハピネッツ", compatReason:"スマートなあなたに、地に足のついた情熱を持つタイプが加わると、より深みが増します。",
+    nba:"ブルックリン・ネッツ", nbaReason:"都会的でスタイリッシュな立ち振る舞いが共通しています。"},
+  {title:"川崎ブレイブサンダース", sub:"神奈川 / 勝負師タイプ", e:3,s:3,t:2,
+    desc:"自らの力で結果を引き寄せる、芯の強さと勝負強さを持つタイプです。大事な場面ほど力を発揮し、プレッシャーをむしろ力に変えられる強さがあります。人に頼るよりも、まず自分で道を切り拓こうとする独立心の強さも特徴。その勝負強さが、周囲からの信頼と尊敬を集めています。",
+    traits:["芯が強く勝負強い","自分の力で道を切り拓く","プレッシャーに強い"],
+    compat:"信州ブレイブウォリアーズ", compatReason:"独立心の強いあなたを、結束力のあるタイプが自然と支えてくれる関係。",
+    nba:"マイアミ・ヒート", nbaReason:"「ヒート・カルチャー」と呼ばれる、タフで勝負強い気質が重なります。"},
+  {title:"横浜ビー・コルセアーズ", sub:"神奈川 / こなれタイプ", e:2,s:3,t:3,
+    desc:"都会的な落ち着きとバランス感覚を併せ持つ、こなれたタイプです。物事に一喜一憂しすぎず、余裕を持って対応できる懐の深さがあります。センスの良さと落ち着きを両立しているため、どんな場面でも浮かず馴染める柔軟さが強み。こなれた雰囲気が、自然と人を惹きつけます。",
+    traits:["落ち着きとセンスを両立","バランス良く振る舞える","こなれた印象を与える"],
+    compat:"広島ドラゴンフライズ", compatReason:"余裕のあるあなたと、粘り強いタイプは、互いの良さを引き立て合う組み合わせ。",
+    nba:"ロサンゼルス・クリッパーズ", nbaReason:"都会的な洗練さと、肩肘張らない余裕のある雰囲気が似ています。"},
+  {title:"富山グラウジーズ", sub:"富山 / 地域密着タイプ", e:3,s:2,t:4,
+    desc:"地域に根ざし、仲間との結びつきを大切にするタイプです。目先の利益よりも、長く続く信頼関係を重視する堅実さがあります。身近な人を大事にする姿勢が、結果として周囲からの厚い信頼につながっていくタイプ。じっくりと時間をかけて築く関係性を大切にしています。",
+    traits:["地域や仲間を大切にする","堅実にチームに貢献する","じっくり信頼を築く"],
+    compat:"京都ハンナリーズ", compatReason:"じっくり信頼を築くあなたと、上品なタイプは、落ち着いた良い関係を築けます。",
+    nba:"ミルウォーキー・バックス", nbaReason:"小さな市場でも地域と一体になって着実に力をつけてきた歩みが重なります。"},
+  {title:"信州ブレイブウォリアーズ", sub:"長野 / 結束タイプ", e:3,s:2,t:5,
+    desc:"個よりも全体、仲間との結束を何より大事にするタイプです。一人の力で突っ走るよりも、みんなで力を合わせて物事を成し遂げることに喜びを感じます。チームの一体感を作り出すのが得意で、周囲をまとめる求心力も自然と備わっています。結束力の強さこそが、あなたの一番の誇りです。",
+    traits:["チームワークを最優先する","結束力を大切にする","一体感を生み出す"],
+    compat:"川崎ブレイブサンダース", compatReason:"結束を大事にするあなたが、勝負強いタイプを自然と後押しできる好相性。",
+    nba:"ゴールデンステート・ウォリアーズ", nbaReason:"名前の通り、仲間との結束とチームワークを何より大事にする文化が共通しています。"},
+  {title:"三遠ネオフェニックス", sub:"静岡・愛知 / 柔軟タイプ", e:3,s:3,t:3,
+    desc:"新しいことにも柔軟に対応しながら、バランス良く前進するタイプです。環境の変化に動じず、むしろそれを楽しむくらいの適応力があります。特定のやり方に固執せず、状況に応じて最適な選択をする賢さも魅力。柔軟な姿勢が、どんな変化の中でも安定した結果を生み出します。",
+    traits:["柔軟性がある","バランス良く対応できる","着実に前進する"],
+    compat:"佐賀バルーナーズ", compatReason:"柔軟なあなたと、まっすぐなタイプは、互いに刺激を与え合える組み合わせ。",
+    nba:"アトランタ・ホークス", nbaReason:"状況に応じて柔軟にスタイルを変えられる適応力が似ています。"},
+  {title:"シーホース三河", sub:"愛知 / 伝統タイプ", e:2,s:2,t:4,
+    desc:"伝統を大切にしながら、仲間と堅実に歩むタイプです。積み重ねてきたものに誇りを持ち、簡単には揺らがない軸の強さがあります。周囲との連携を大事にしながら、着実に物事を前に進めるスタイル。ブレない姿勢が、長期的な信頼関係を育てていきます。",
+    traits:["伝統や積み重ねを大事にする","堅実でブレない","仲間との連携を重視"],
+    compat:"茨城ロボッツ", compatReason:"伝統を守るあなたに、新しい挑戦を楽しむタイプが加わると、程よい刺激が生まれます。",
+    nba:"ニューヨーク・ニックス", nbaReason:"長い歴史と伝統を大事にし、熱狂的なファンに支えられている点が重なります。"},
+  {title:"名古屋ダイヤモンドドルフィンズ", sub:"愛知 / 器用タイプ", e:3,s:3,t:3,
+    desc:"器用に何でもこなすバランス型で、ものごとを手際よく進めるタイプです。苦手分野が少なく、求められればどんな役割にも柔軟に対応できる万能さがあります。効率の良さと丁寧さを両立できるのが強みで、周囲から「何でもできるね」と頼られることも多いはず。",
+    traits:["何でも器用にこなせる","手際の良さがある","バランス感覚に優れる"],
+    compat:"島根スサノオマジック", compatReason:"器用なあなたが、情熱的なタイプの熱量をうまく形にできる好相性。",
+    nba:"トロント・ラプターズ", nbaReason:"一つの型にはまらず、何でもこなせる万能さが共通しています。"},
+  {title:"滋賀レイクス", sub:"滋賀 / 協調タイプ", e:2,s:2,t:4,
+    desc:"穏やかで協調性が高く、仲間と着実に力を合わせるタイプです。自己主張を強く押し通すよりも、周囲との調和を大切にする優しさがあります。急がず焦らず、仲間と足並みを揃えながら進んでいくスタイル。その穏やかさが、グループ全体に安心感を与えています。",
+    traits:["穏やかで協調性が高い","仲間と力を合わせられる","着実に歩みを進める"],
+    compat:"アルティーリ千葉", compatReason:"協調性のあるあなたが、勢いのあるタイプを穏やかに支えられる関係。",
+    nba:"シャーロット・ホーネッツ", nbaReason:"穏やかでまとまりのある、協調性を大事にするチームカラーが似ています。"},
+  {title:"京都ハンナリーズ", sub:"京都 / 上品タイプ", e:2,s:4,t:3,
+    desc:"上品さと華やかさを兼ね備えた、センスの良い立ち振る舞いが魅力のタイプです。派手すぎず、かといって地味すぎない、絶妙なバランス感覚を持っています。品のある言動を心がけており、周囲から一目置かれる存在になりやすいでしょう。落ち着いた華やかさが、あなたらしさです。",
+    traits:["上品でセンスが良い","華やかさを持つ","品のある振る舞いができる"],
+    compat:"富山グラウジーズ", compatReason:"上品なあなたと、じっくり信頼を築くタイプは、落ち着いた好相性です。",
+    nba:"ポートランド・トレイルブレイザーズ", nbaReason:"派手すぎない上品さと、落ち着いた華やかさが共通しています。"},
+  {title:"大阪エヴェッサ", sub:"大阪 / ムードメーカータイプ", e:4,s:5,t:2,
+    desc:"明るいノリとサービス精神で、周りを楽しませるのが得意なタイプです。場の空気を読みつつ、あえて盛り上げ役に徹する気配りができます。一緒にいると自然と笑いが生まれる存在で、周囲からは「場が明るくなる」と頼りにされがち。そのエンタメ精神が、人を惹きつける一番の魅力です。",
+    traits:["人を楽しませるのが得意","場の空気を明るくする","サービス精神が旺盛"],
+    compat:"宇都宮ブレックス", compatReason:"明るいあなたを、堅実なタイプがしっかり支えてくれる安定した組み合わせ。",
+    nba:"サクラメント・キングス", nbaReason:"会場を盛り上げるエンターテインメント性と、陽気な雰囲気が似ています。"},
+  {title:"神戸ストークス", sub:"兵庫 / バランスタイプ", e:3,s:3,t:3,
+    desc:"癖のないバランス型で、どんな場面でも無難に力を発揮するタイプです。極端に偏ったスタイルを持たない分、誰とでも自然に付き合える柔軟さがあります。安定感のある振る舞いが、周囲に「一緒にいて疲れない」という安心感を与えるでしょう。バランスの良さこそが隠れた強みです。",
+    traits:["バランスが良い","どんな場でも対応できる","安定して力を出せる"],
+    compat:"長崎ヴェルカ", compatReason:"バランス型のあなたが、勢いのあるタイプの推進力をうまく活かせる関係。",
+    nba:"ニューオーリンズ・ペリカンズ", nbaReason:"癖のないバランスの良さで、堅実に力を発揮するスタイルが重なります。"},
+  {title:"島根スサノオマジック", sub:"島根 / 情熱タイプ", e:5,s:2,t:4,
+    desc:"熱い想いを胸に、地域や仲間とともに全力で突き進むタイプです。一度決めたことに対する情熱の強さは人一倍で、周囲を自然と巻き込んでいく力があります。飾らず素直に感情を表現するタイプで、その熱量の高さがまわりに勇気を与えることも多いはず。",
+    traits:["情熱的で熱量が高い","地域や仲間を大切にする","全力で物事に取り組む"],
+    compat:"名古屋ダイヤモンドドルフィンズ", compatReason:"情熱的なあなたの想いを、器用なタイプがうまく形にしてくれる好相性。",
+    nba:"デンバー・ナゲッツ", nbaReason:"標高の高い本拠地のように、熱量高く力強いプレースタイルが似ています。"},
+  {title:"広島ドラゴンフライズ", sub:"広島 / 粘り強いタイプ", e:3,s:2,t:5,
+    desc:"粘り強くチームワークを重視し、仲間と結果を積み上げるタイプです。一度や二度の失敗ではへこたれず、最後までやり遂げる芯の強さがあります。個人プレーよりも、仲間と協力しながら物事を進めることに手応えを感じるタイプ。その粘り強さが、着実な結果につながっていきます。",
+    traits:["粘り強く最後までやり遂げる","チームワークを大切にする","着実に結果を積み上げる"],
+    compat:"横浜ビー・コルセアーズ", compatReason:"粘り強いあなたに、余裕のあるタイプが加わることで、程よい息抜きが生まれます。",
+    nba:"フィラデルフィア・セブンティシクサーズ", nbaReason:"粘り強く、仲間と支え合いながら結果を積み上げる姿勢が共通しています。"},
+  {title:"佐賀バルーナーズ", sub:"佐賀 / 地元愛タイプ", e:4,s:2,t:4,
+    desc:"地域への熱い想いを胸に、仲間と一丸となって前進するタイプです。身近な人やコミュニティを大切にし、そこで培った絆を何よりの財産だと感じています。まっすぐで裏表のない性格が、周囲から厚い信頼を集める理由。地に足のついた熱量で、着実に前へと進んでいきます。",
+    traits:["地元愛と熱意にあふれる","仲間と一丸となれる","まっすぐに前進する"],
+    compat:"三遠ネオフェニックス", compatReason:"まっすぐなあなたと、柔軟なタイプは、互いに良い刺激を与え合えます。",
+    nba:"ダラス・マーベリックス", nbaReason:"まっすぐで裏表のない、地元に愛されるチームカラーが似ています。"},
+  {title:"長崎ヴェルカ", sub:"長崎 / 挑戦者タイプ", e:4,s:4,t:3,
+    desc:"勢いと新しい挑戦を恐れない、エネルギッシュなタイプです。まだ実績のないことにも臆せず飛び込んでいく行動力があります。周囲を巻き込みながら前に進むエネルギーがあり、一緒にいると新しいことに挑戦する勇気をもらえる存在。その勢いが、まわりの空気を変えていきます。",
+    traits:["勢いとエネルギーがある","新しい挑戦を楽しめる","周囲を引っ張る力がある"],
+    compat:"神戸ストークス", compatReason:"勢いのあるあなたを、バランス型のタイプが落ち着いて支えてくれる組み合わせ。",
+    nba:"ヒューストン・ロケッツ", nbaReason:"新しいことに挑戦する勢いとエネルギーが重なります。"},
+  {title:"琉球ゴールデンキングス", sub:"沖縄 / 情熱エンタメタイプ", e:5,s:5,t:3,
+    desc:"情熱とエンタメ性を兼ね備え、南国らしいおおらかさで周りを魅了するタイプです。感情表現が豊かで、喜びも悔しさも全身で表すタイプ。その熱量とエンターテインメント性で、自然と周囲の視線を集める存在になります。一緒にいるだけで元気をもらえる、太陽のような魅力の持ち主です。",
+    traits:["情熱的でエネルギッシュ","周りを巻き込む熱量がある","一緒にいると元気をもらえる"],
+    compat:"群馬クレインサンダーズ", compatReason:"情熱的なあなたのエネルギーを、柔軟なタイプがうまく受け止めてくれる好相性。",
+    nba:"フェニックス・サンズ", nbaReason:"常夏の地を本拠地に、情熱的でエンターテインメント性あふれる雰囲気が似ています。"}
+];
+
+let current = 0;
+const sums = { e: 0, s: 0, t: 0 };
+
+function $(id) { return document.getElementById(id); }
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("show"));
+  $(id).classList.add("show");
+}
+
+function startQuiz() {
+  current = 0;
+  sums.e = 0; sums.s = 0; sums.t = 0;
+  buildProgress();
+  showScreen("screen-quiz");
+  renderQuestion();
+}
+
+function buildProgress() {
+  const row = $("progress-row");
+  row.innerHTML = "";
+  QUESTIONS.forEach(() => {
+    const span = document.createElement("span");
+    span.innerHTML = "<i></i>";
+    row.appendChild(span);
+  });
+}
+
+function updateProgress() {
+  document.querySelectorAll("#progress-row span").forEach((s, i) => {
+    s.classList.remove("done", "active");
+    if (i < current) s.classList.add("done");
+    if (i === current) s.classList.add("active");
+  });
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  $("q-count").textContent = `QUESTION ${current + 1} / ${QUESTIONS.length}`;
+  $("q-text").textContent = q.text;
+  const optsEl = $("options");
+  optsEl.innerHTML = "";
+  q.opts.forEach(opt => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = opt.label;
+    b.onclick = () => selectOption(opt);
+    optsEl.appendChild(b);
+  });
+  updateProgress();
+}
+
+function selectOption(opt) {
+  sums.e += opt.e; sums.s += opt.s; sums.t += opt.t;
+  current += 1;
+  if (current < QUESTIONS.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  const n = QUESTIONS.length;
+  const uv = { e: sums.e / n, s: sums.s / n, t: sums.t / n };
+
+  let best = 0;
+  let bestDist = Infinity;
+  TEAMS.forEach((team, i) => {
+    const d = Math.pow(team.e - uv.e, 2) + Math.pow(team.s - uv.s, 2) + Math.pow(team.t - uv.t, 2);
+    if (d < bestDist) { bestDist = d; best = i; }
+  });
+
+  const team = TEAMS[best];
+  $("r-title").textContent = team.title;
+  $("r-sub").textContent = team.sub;
+  $("r-desc").textContent = team.desc;
+  const traitsEl = $("r-traits");
+  traitsEl.innerHTML = "";
+  team.traits.forEach(t => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="trait-dot"></span><span>${t}</span>`;
+    traitsEl.appendChild(li);
+  });
+  $("compat-name").textContent = team.compat;
+  $("compat-reason").textContent = team.compatReason;
+  $("nba-name").textContent = team.nba;
+  $("nba-reason").textContent = team.nbaReason;
+  window.__resultTeam = team;
+  showScreen("screen-result");
+}
+
+function restart() { showScreen("screen-start"); }
+
+function showToast(msg) {
+  const toast = $("toast");
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2400);
+}
+
+function shareResult() {
+  const team = window.__resultTeam;
+  const shareUrl = location.href;
+  const text = `【あなたの適正Bリーグチーム診断】\n私にぴったりなのは「${team.title}」でした!\n${team.sub}\nおすすめNBAチームは「${team.nba}」\n\nあなたの適正チームは？(全26クラブから診断)\n${shareUrl}`;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast("コピーしました。SNSに貼り付けてシェアしよう");
+    }).catch(() => { window.prompt("コピーしてSNSに貼り付けてください", text); });
+  } else {
+    window.prompt("コピーしてSNSに貼り付けてください", text);
+  }
+}
+
+/* ---- 画像カード生成 ---- */
+function wrapByChar(ctx, text, maxWidth) {
+  const lines = [];
+  let line = "";
+  for (const ch of text) {
+    const test = line + ch;
+    if (ctx.measureText(test).width > maxWidth && line !== "") {
+      lines.push(line);
+      line = ch;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+async function buildResultCanvas(team) {
+  if (document.fonts && document.fonts.ready) {
+    try { await document.fonts.ready; } catch (e) {}
+  }
+  const W = 1080, H = 1350;
+  const canvas = document.createElement("canvas");
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d");
+
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, "#14171f");
+  bg.addColorStop(1, "#1d2330");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = "#ff7a3d";
+  ctx.fillRect(0, 0, W, 14);
+
+  const ML = 72;
+  const MW = W - ML * 2;
+  let y = 120;
+
+  ctx.fillStyle = "#ff8c52";
+  ctx.font = "700 30px 'Zen Kaku Gothic New'";
+  ctx.fillText("TEAM CHECK — ALL 26 CLUBS", ML, y);
+
+  y += 56;
+  ctx.fillStyle = "#9aa4b2";
+  ctx.font = "500 26px 'Zen Kaku Gothic New'";
+  ctx.fillText("YOUR TEAM IS", ML, y);
+
+  y += 70;
+  ctx.fillStyle = "#ff7a3d";
+  ctx.font = "900 76px 'Zen Kaku Gothic New'";
+  const titleLines = wrapByChar(ctx, team.title, MW);
+  titleLines.forEach(line => { ctx.fillText(line, ML, y); y += 86; });
+
+  y += 4;
+  ctx.fillStyle = "#9aa4b2";
+  ctx.font = "500 30px 'Noto Sans JP'";
+  ctx.fillText(team.sub, ML, y);
+
+  y += 56;
+  ctx.strokeStyle = "#2b3340";
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(ML, y); ctx.lineTo(W - ML, y); ctx.stroke();
+
+  y += 56;
+  ctx.fillStyle = "#e8ecf2";
+  ctx.font = "400 32px 'Noto Sans JP'";
+  const descLines = wrapByChar(ctx, team.desc, MW).slice(0, 5);
+  descLines.forEach(line => { ctx.fillText(line, ML, y); y += 48; });
+
+  y += 28;
+  const boxes = [
+    { label: "相性のいいタイプ", value: team.compat, color: "#ff7a3d" },
+    { label: "おすすめのNBAチーム", value: team.nba, color: "#34b98c" }
+  ];
+  boxes.forEach(b => {
+    const boxH = 118;
+    ctx.fillStyle = "#1a1f29";
+    ctx.strokeStyle = b.color;
+    ctx.lineWidth = 2;
+    roundRect(ctx, ML, y, MW, boxH, 16);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = b.color;
+    ctx.font = "700 24px 'Zen Kaku Gothic New'";
+    ctx.fillText(b.label, ML + 24, y + 42);
+
+    ctx.fillStyle = "#f1f3f7";
+    ctx.font = "900 34px 'Zen Kaku Gothic New'";
+    ctx.fillText(b.value, ML + 24, y + 88);
+
+    y += boxH + 22;
+  });
+
+  ctx.fillStyle = "#6b7482";
+  ctx.font = "500 24px 'Noto Sans JP'";
+  ctx.textAlign = "center";
+  ctx.fillText("あなたの適正Bリーグチーム診断", W / 2, H - 56);
+  ctx.textAlign = "left";
+
+  return canvas;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+async function saveImage() {
+  const team = window.__resultTeam;
+  showToast("画像を作成しています…");
+  let canvas;
+  try {
+    canvas = await buildResultCanvas(team);
+  } catch (e) {
+    showToast("画像の作成に失敗しました");
+    return;
+  }
+
+  canvas.toBlob(async (blob) => {
+    if (!blob) { showToast("画像の作成に失敗しました"); return; }
+    const fileName = `bleague-diagnosis-${team.title}.png`;
+    const file = new File([blob], fileName, { type: "image/png" });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: "あなたの適正Bリーグチーム診断",
+          text: `私にぴったりなのは「${team.title}」でした!`
+        });
+        return;
+      } catch (e) {
+        /* ユーザーがキャンセルした場合などはダウンロードにフォールバック */
+      }
+    }
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    showToast("画像を保存しました。SNSアプリで投稿に添付しよう");
+  }, "image/png");
+}
+</script>
+</body>
+</html>
